@@ -60,7 +60,7 @@ public class BasicAuthSecurityConfiguration {
     @Bean
     public UserDetailsService userDetailsService(DataSource dataSource) {
 
-        var user = User.withUsername("akechsalim")
+        var user = User.withUsername("akechsalim1")
                 .password("akech4476")
                 .roles("USER")
                 .build();
