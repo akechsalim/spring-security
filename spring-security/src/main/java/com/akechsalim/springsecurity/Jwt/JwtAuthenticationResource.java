@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 @RestController
 public class JwtAuthenticationResource {
 
-    private JwtEncoder jwtEncoder;
+    private final JwtEncoder jwtEncoder;
 
     public JwtAuthenticationResource(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
     }
 
     @PostMapping("/authenticate")
-    public JwtResponse authenticate(Authentication authentication) {
+    private JwtResponse authenticate(Authentication authentication) {
         return new JwtResponse(createToken(authentication));
     }
 

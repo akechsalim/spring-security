@@ -6,23 +6,16 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import javax.sql.DataSource;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPublicKey;
@@ -30,6 +23,7 @@ import java.util.UUID;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+@Configuration
 public class JwtSecurityConfiguration {
     @Bean
     SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
@@ -42,37 +36,9 @@ public class JwtSecurityConfiguration {
         return http.build();
     }
 
-
-    @Bean
-    public DataSource dataSource() {
-        return new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.H2)
-                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
-                .build();
-    }
-
-//    @Bean
-//    public UserDetailsService userDetailsService(DataSource dataSource) {
-//
-//        var user = User.withUsername("akechsalim")
-//                .password("akech4476")
-//                .roles("USER")
-//                .build();
-//
-//        var admin = User.withUsername("admin")
-//                .password("adminPass")
-//                .roles("ADMIN")
-//                .build();
-//
-//        var jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-//        jdbcUserDetailsManager.createUser(user);
-//        jdbcUserDetailsManager.createUser(admin);
-//
-//        return new InMemoryUserDetailsManager(user, admin);
-//    }
-
     @Bean
     public KeyPair keyPair() {
+
         try {
             var keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
