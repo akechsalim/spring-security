@@ -8,6 +8,8 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -27,12 +29,14 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class JwtSecurityConfiguration {
     @Bean
     SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((requests) -> requests.anyRequest().authenticated());
-        http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.csrf().disable();
-        http.httpBasic(withDefaults());
-        http.headers().frameOptions().sameOrigin();
-        http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+        http
+                .authorizeHttpRequests((requests) -> requests.anyRequest().authenticated())
+                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(withDefaults())
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+
         return http.build();
     }
 
